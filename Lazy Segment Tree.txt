@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+#define ll long long
+using namespace std;
+
+void build(ll *st,ll *lazy,int ind,int l,int h)
+{
+    lazy[ind]=0;
+    if(l==h) {cin>>st[ind]; return;}
+    int mid=(l+h)/2;
+    build(st,lazy,2*ind+1,l,mid);
+    build(st,lazy,2*ind+2,mid+1,h);
+    st[ind]=st[2*ind+1]+st[2*ind+2];
+}
+void update(ll *st,ll *lazy,int ind,int l,int h,int qs,int qe,ll val)
+{
+    if(lazy[ind]) {
+        st[ind]+=(h-l+1ll)*lazy[ind];
+        if(l!=h) {lazy[2*ind+1]+=lazy[ind]; lazy[2*ind+2]+=lazy[ind];}
+        lazy[ind]=0;
+    }
+    if(qs>h || qe<l) return;
+    if(qs<=l && qe>=h) {
+        st[ind]+=(h-l+1ll)*val;
+        if(l!=h) {lazy[2*ind+1]+=val; lazy[2*ind+2]+=val;}
+        return;
+    }
+    int mid=(l+h)/2;
+    update(st,lazy,2*ind+1,l,mid,qs,qe,val);
+    update(st,lazy,2*ind+2,mid+1,h,qs,qe,val);
+    st[ind]=st[2*ind+1]+st[2*ind+2];
+}
+ll query(ll *st,ll *lazy,int ind,int l,int h,int qs,int qe) {
+    if(lazy[ind]) {
+        st[ind]+=(h-l+1)*lazy[ind];
+        if(l!=h) {
+            st[2*ind+1]+=lazy[ind];
+            st[2*ind+2]+=lazy[ind];
+        }
+        lazy[ind]=0;
+    }
+    if(qs>h || qe<l) return 0;
+    if(qs<=l && qe>=h) return st[ind];
+    int mid=(l+h)/2;
+    return query(st,lazy,2*ind+1,l,mid,qs,qe)+query(st,lazy,2*ind+2,mid+1,h,qs,qe);
+}
+/*
+5
+1 2 0 0 -3
+3
+1 0 4
+0 2 3 3
+1 0 4    ans-> 0 6
+*/
+int main() {
+    int n; cin>>n;
+    ll st[4*n],lazy[4*n];
+    build(st,lazy,0,0,n-1);
+    int q; cin>>q;
+    while(q--) {
+        int type; cin>>type;
+        if(type == 1) {
+            int l,r; cin>>l>>r;
+            cout<<query(st,lazy,0,0,n-1,l,r)<<"\n";
+        }
+        else {
+            int l,r;
+            ll val;
+            cin>>l>>r>>val;
+            update(st,lazy,0,0,n-1,l,r,val);
+        }
+    }
+}

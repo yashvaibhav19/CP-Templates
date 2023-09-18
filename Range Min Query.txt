@@ -1,0 +1,46 @@
+void build(int *arr,int* segTree,int ind,int low,int high)
+{
+    if(low==high)
+    {
+        segTree[ind]=arr[low];
+        return;
+    }
+    int mid=(low+high)/2;
+    build(arr,segTree,2*ind+1,low,mid);
+    build(arr,segTree,2*ind+2,mid+1,high);
+    
+    segTree[ind]=min(segTree[2*ind+1],segTree[2*ind+2]);
+    
+}
+int *constructST(int arr[],int n)
+{
+  //Your code here
+  int* segTree=new int[4*n];
+  build(arr,segTree,0,0,n-1);
+  return segTree;
+}
+void update(int *arr,int *st,int n,int i,int val,int ind=0,int low=0,int high=INT_MAX)
+{
+    if(high==INT_MAX) high=n-1;
+    if(low==high)
+    {
+        
+    }
+}
+int RMQ(int st[] , int n, int l, int r,int ind=0,int low=0,int high=INT_MAX)
+{
+//Your code here
+    if(high==INT_MAX) high=n-1;
+    if(low>=l && high<=r)
+    {
+        return st[ind];
+    }
+    if(high<l || low>r)
+    {
+        return INT_MAX;
+    }
+    int mid=(low+high)/2;
+    int leftChild=RMQ(st,n,l,r,2*ind+1,low,mid);
+    int rightChild=RMQ(st,n,l,r,2*ind+2,mid+1,high);
+    return min(leftChild,rightChild);
+}

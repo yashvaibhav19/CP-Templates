@@ -1,0 +1,8 @@
+    srand(time(0));
+    cout<<1000<<"\n";
+    int maxi=87539,mini=875;
+    rep(i,0,1000)
+    {
+        int x=rand()%(maxi-mini+1)+mini;
+        cout<<x<<"\n";
+    }

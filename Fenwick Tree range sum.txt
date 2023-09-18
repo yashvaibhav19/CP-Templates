@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class BIT{
+    int *T;
+    int N;
+public:
+    BIT(int _size)
+    {
+        N=_size;
+        T=new int[_size+1];
+        for(int i=0;i<=_size;i++)
+            T[i]=0;
+    }
+    void updateBIT(int ind,int del)
+    {
+        //its assumed that you get index of
+        //0-indexed array. So lets increment it.
+        ind++;
+        while(ind<=N)
+        {
+            T[ind]+=del;
+            ind=ind+(ind& -ind);
+        }
+    }
+    int queryBIT(int i)
+    {
+        // sum of arr[0]+arr[1]+....+arr[i]
+        int res=0;
+        i++;
+        while(i>0)
+        {
+            res+=T[i];
+            i-=(i&-i);
+        }
+        return res;
+    }
+    void createBIT(int *arr,int n)
+    {
+        for(int i=0;i<n;i++)
+            updateBIT(i,arr[i]);
+    }
+
+    ~BIT()
+    {
+        free(T);
+    }
+};
+int main()
+{
+    int n;
+    cin>>n;
+    int arr[n];
+    for(int i=0;i<n;i++)
+        cin>>arr[i];
+    /*
+    5
+    2 3 3 1 1
+    */
+    BIT ob(n);
+    ob.createBIT(arr,n);
+    cout<<ob.queryBIT(3)<<"\n"; //9
+    return 0;
+}
